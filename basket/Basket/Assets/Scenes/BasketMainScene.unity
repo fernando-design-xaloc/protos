@@ -268,9 +268,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   situations:
   - start: {fileID: 4611939293112300657, guid: b2a1e887b6d5cff41b4a8d943c747f62, type: 3}
-    player1Wins: {fileID: 4354981680683146179, guid: 43c4994b8bf084c43967cf366765ff35, type: 3}
-    player2Wins: {fileID: 3219641001661529914, guid: baccf1bb6e6257544a46fedca8516661, type: 3}
-    playerDraws: {fileID: 5690433936395231748, guid: 7634b8ad440d79a4b958de464fc6fc15, type: 3}
+    player1Wins: {fileID: 8881946532440544057, guid: 43c4994b8bf084c43967cf366765ff35, type: 3}
+    player2Wins: {fileID: 6813082192385940497, guid: baccf1bb6e6257544a46fedca8516661, type: 3}
+    playerDraws: {fileID: 746468893000190208, guid: 7634b8ad440d79a4b958de464fc6fc15, type: 3}
   playerSelectionMovementCanvas: {fileID: 8429445974945440615}
   scoreCanvas: {fileID: 649143531}
   player1ScoreText: {fileID: 1832651958}
@@ -457,6 +457,50 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 202940510316316273, guid: 33f6a60de1b9a3a4fa3338303aabc3ff, type: 3}
+      propertyPath: field of view
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 202940510316316273, guid: 33f6a60de1b9a3a4fa3338303aabc3ff, type: 3}
+      propertyPath: far clip plane
+      value: 5000
+      objectReference: {fileID: 0}
+    - target: {fileID: 202940510316316273, guid: 33f6a60de1b9a3a4fa3338303aabc3ff, type: 3}
+      propertyPath: near clip plane
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 202940510316316273, guid: 33f6a60de1b9a3a4fa3338303aabc3ff, type: 3}
+      propertyPath: orthographic size
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 202940510316316284, guid: 33f6a60de1b9a3a4fa3338303aabc3ff, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 2225.8455
+      objectReference: {fileID: 0}
+    - target: {fileID: 202940510316316284, guid: 33f6a60de1b9a3a4fa3338303aabc3ff, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1370.8844
+      objectReference: {fileID: 0}
+    - target: {fileID: 202940510316316284, guid: 33f6a60de1b9a3a4fa3338303aabc3ff, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 2885.8748
+      objectReference: {fileID: 0}
+    - target: {fileID: 202940510316316284, guid: 33f6a60de1b9a3a4fa3338303aabc3ff, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.59769464
+      objectReference: {fileID: 0}
+    - target: {fileID: 202940510316316284, guid: 33f6a60de1b9a3a4fa3338303aabc3ff, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 202940510316316284, guid: 33f6a60de1b9a3a4fa3338303aabc3ff, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.8017239
+      objectReference: {fileID: 0}
+    - target: {fileID: 202940510316316284, guid: 33f6a60de1b9a3a4fa3338303aabc3ff, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
     - target: {fileID: 202940511463146052, guid: 33f6a60de1b9a3a4fa3338303aabc3ff, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 

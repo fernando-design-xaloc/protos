@@ -4,5 +4,8 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/BasketMainScene.unity
+    guid: b8d700b7d82649748b4ffd4e7c1d9ee0
   m_configObjects: {}
