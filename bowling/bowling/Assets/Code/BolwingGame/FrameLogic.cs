@@ -5,7 +5,7 @@ using UnityEngine;
 public class FrameLogic 
 {
     public GameObject pinsOfTheFrame;
-    public float quantityOfRemainingShoots=2;
+    public int quantityOfRemainingShoots=2;
 
     public FrameLogic(GameObject pinsOfTheFrame) 
     { 

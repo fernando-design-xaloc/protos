@@ -57,29 +57,29 @@ public class BowlingGameManager : Singleton<BowlingGameManager>
 
     public void startFrame()
     {
-        Debug.Log("Frame Started");
         if (currentFrame != null)
         {
             Destroy(currentFrame.pinsOfTheFrame);
         }
-
         GameObject pinsOfTheFrame = Instantiate(pins, pinsSpawnPosition.transform.position, pinsSpawnPosition.transform.rotation);
         currentFrame = new FrameLogic(pinsOfTheFrame);
+        CanvasBehaviour.instance.updateCurrentPins(0, currentFrame.quantityOfRemainingShoots);
+
         startAttempt();
     }
 
     public void startAttempt()
     {
-        Debug.Log("Attempt Started");
         isAPinHit = false;
         disableHitPins();
         BolwingController.instance.inputMap.BowlingGampley.Enable();
+        CanvasBehaviour.instance.shootNow();
     }
 
     private void disableHitPins()
     {
-        Debug.Log("Pins disabled");
         IList<PinBehaviour> hitPins = currentFrame.pinsOfTheFrame.GetComponentsInChildren<PinBehaviour>().Where(pin => pin.isPinHit == true).ToList();
+        CanvasBehaviour.instance.updateCurrentPins(hitPins.Count,currentFrame.quantityOfRemainingShoots);
         foreach (PinBehaviour pin in hitPins)
         {
             pin.gameObject.SetActive(false);
@@ -88,12 +88,12 @@ public class BowlingGameManager : Singleton<BowlingGameManager>
         {
             startFrame();
         }
+        
 
     }
 
     public void endAttempt()
     {
-        Debug.Log("Attempt Ended");
         isBallGenerated = false;
         currentFrame.quantityOfRemainingShoots--;
         BolwingController.instance.inputMap.BowlingGampley.Disable();

@@ -1,3 +1,4 @@
+using Cinemachine;
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -11,6 +12,11 @@ public class BolwingController : Singleton<BolwingController>
 {
     public bool isDrawingShoot;
     public BowlingInput inputMap;
+
+
+    [SerializeField]
+    private GameObject auxBallToInstantiate;
+    private GameObject instantiatedAuxBall;
 
     [Header("Finger Position Values")]
     [SerializeField]
@@ -34,7 +40,14 @@ public class BolwingController : Singleton<BolwingController>
     [SerializeField]
     private float holdTime = 0.5f;
     public float holdingFingerStartTime;
-    
+
+
+    [Header("Aux Ball configurable properties")]
+    [SerializeField]
+    private GameObject ballSpawnpointReferenceStart;
+    [SerializeField]
+    private GameObject ballSpawnpointReferenceEnd;
+
 
     #region MonoBehaviour Methods
     private void Awake()
@@ -48,6 +61,8 @@ public class BolwingController : Singleton<BolwingController>
         inputMap.BowlingGampley.PressAction.started += PressButtonStarted;
         inputMap.BowlingGampley.PressAction.canceled +=  PressButtonCanceled;
 
+        instantiatedAuxBall = Instantiate(auxBallToInstantiate);
+        instantiatedAuxBall.SetActive(false);
     }
 
 
@@ -60,7 +75,10 @@ public class BolwingController : Singleton<BolwingController>
         else if (isDrawingShoot)
         {
             fingerCurrentPosition = inputMap.BowlingGampley.DrawPosition.ReadValue<Vector2>();
-
+        }
+        if (instantiatedAuxBall.activeSelf)
+        {
+            instantiatedAuxBall.transform.position = generateBallPosition(fingerCurrentPosition);
         }
     }
     #endregion
@@ -87,6 +105,8 @@ public class BolwingController : Singleton<BolwingController>
     {
         holdingFingerStartTime = Time.time;
         fingerStartingPosition = fingerCurrentPosition;
+        //TODO: generate aux ball
+        instantiatedAuxBall.SetActive(true);
     }
 
     private void PressButtonCanceled(InputAction.CallbackContext context)
@@ -97,6 +117,8 @@ public class BolwingController : Singleton<BolwingController>
             isDrawingShoot = false;
             performShoot();
         }
+        //TODO: remove aux ball
+        instantiatedAuxBall.SetActive(false);
     }
     #endregion
 
@@ -119,19 +141,41 @@ public class BolwingController : Singleton<BolwingController>
     {
         fingerEndPosition = fingerCurrentPosition;
 
-        float magnitude = Mathf.Clamp(fingerCurrentDelta.magnitude,minDeltaToShoot,maxDeltaToShoot);
+        float percentage = calculatePercentajeOfForceToShoot();
+
+        //Calculo de la dirección de disparo
+        Vector3 fingerEndPositionOnWorld = Camera.main.ScreenToWorldPoint(new Vector3(fingerEndPosition.x,fingerEndPosition.y, Camera.main.farClipPlane));
+       
+        Vector3 spawnPosition = generateBallPosition(fingerEndPosition);
+
+        Vector3 directionToShoot = (fingerEndPositionOnWorld - spawnPosition).normalized;
+        directionToShoot.y = 0;
+
+        BallSpawner.instance.performRectShoot(directionToShoot, percentage, spawnPosition);
+
+        BowlingGameManager.instance.endAttempt();
+    }
+
+    private float calculatePercentajeOfForceToShoot()
+    {
+        float magnitude = Mathf.Clamp(fingerCurrentDelta.magnitude, minDeltaToShoot, maxDeltaToShoot);
 
         float range = maxDeltaToShoot - minDeltaToShoot;
         float correctedStartValue = magnitude - minDeltaToShoot;
         float percentage = (correctedStartValue * 100) / range;
 
+        return percentage;
 
-        Vector3 fingerEndPositionOnWorld = Camera.main.ScreenToWorldPoint(new Vector3(fingerEndPosition.x,fingerEndPosition.y,Camera.main.farClipPlane));
-        Vector3 directionNormalized = (fingerEndPositionOnWorld - BallSpawner.instance.spawningReferenceLeft.transform.position).normalized;
+    }
 
+    private Vector3 generateBallPosition(Vector2 position)
+    {
+        float range = Camera.main.pixelWidth;
+        float percentage = (position.x * 100) / range;
 
-        BallSpawner.instance.performRectShoot(directionNormalized, percentage,fingerStartingPosition);
-        BowlingGameManager.instance.endAttempt();
+        float xPosition = (percentage * (ballSpawnpointReferenceEnd.transform.position.x - ballSpawnpointReferenceStart.transform.position.x) / 100) + ballSpawnpointReferenceStart.transform.position.x;
+        xPosition = Math.Clamp(xPosition, ballSpawnpointReferenceStart.transform.position.x, ballSpawnpointReferenceEnd.transform.position.x);
+        return new Vector3(xPosition,ballSpawnpointReferenceStart.transform.position.y, ballSpawnpointReferenceStart.transform.position.z);
     }
 
 }
