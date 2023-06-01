@@ -29,6 +29,7 @@ public class BallSpawner : Singleton<BallSpawner>
         spawnedBall = Instantiate(ball, positionToSpawn,Quaternion.identity);
         spawnedBall.GetComponent<Rigidbody>().AddForce(directionToShoot * forceToApply);
         CanvasBehaviour.instance.holdOn();
+        BowlingGameManager.instance.timeFromBallShoot= Time.time;
     }
 
 

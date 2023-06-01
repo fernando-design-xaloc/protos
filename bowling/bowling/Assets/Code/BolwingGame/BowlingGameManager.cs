@@ -5,6 +5,9 @@ using UnityEngine;
 
 public class BowlingGameManager : Singleton<BowlingGameManager>
 {
+
+    private int previousQuantity;
+
     [Header("Initial properties")]
     [SerializeField]
     private GameObject pins;
@@ -21,7 +24,7 @@ public class BowlingGameManager : Singleton<BowlingGameManager>
 
 
     [Header("Missing Ball properties")]
-    private float timeFromBallShoot;
+    public float timeFromBallShoot;
     [SerializeField]
     private float timeToTakeABallAsMiss = 10;
     public bool isBallGenerated;
@@ -46,6 +49,7 @@ public class BowlingGameManager : Singleton<BowlingGameManager>
 
             if (currentFrame.quantityOfRemainingShoots <= 0)
             {
+                disableHitPins();
                 startFrame();
             }
             else
@@ -55,6 +59,7 @@ public class BowlingGameManager : Singleton<BowlingGameManager>
         }
     }
 
+
     public void startFrame()
     {
         if (currentFrame != null)
@@ -63,10 +68,10 @@ public class BowlingGameManager : Singleton<BowlingGameManager>
         }
         GameObject pinsOfTheFrame = Instantiate(pins, pinsSpawnPosition.transform.position, pinsSpawnPosition.transform.rotation);
         currentFrame = new FrameLogic(pinsOfTheFrame);
-        CanvasBehaviour.instance.updateCurrentPins(0, currentFrame.quantityOfRemainingShoots);
-
         startAttempt();
+        CanvasBehaviour.instance.updateCurrentPins(0, currentFrame.quantityOfRemainingShoots);
     }
+
 
     public void startAttempt()
     {
@@ -76,20 +81,42 @@ public class BowlingGameManager : Singleton<BowlingGameManager>
         CanvasBehaviour.instance.shootNow();
     }
 
+
     private void disableHitPins()
     {
-        IList<PinBehaviour> hitPins = currentFrame.pinsOfTheFrame.GetComponentsInChildren<PinBehaviour>().Where(pin => pin.isPinHit == true).ToList();
-        CanvasBehaviour.instance.updateCurrentPins(hitPins.Count,currentFrame.quantityOfRemainingShoots);
+        IList<PinBehaviour> pins = currentFrame.pinsOfTheFrame.GetComponentsInChildren<PinBehaviour>();
+        IList<PinBehaviour> hitPins = new List<PinBehaviour>();
+        foreach (PinBehaviour pin in pins)
+        {
+            if (pin.isPinHit)
+            {
+                hitPins.Add(pin);
+            }
+        }
+
+        if(currentFrame.quantityOfRemainingShoots == 1)
+        {
+            previousQuantity = hitPins.Count;
+            CanvasBehaviour.instance.updateCurrentPins(previousQuantity, currentFrame.quantityOfRemainingShoots);
+        }
+        else
+        {
+            CanvasBehaviour.instance.updateCurrentPins(previousQuantity+hitPins.Count, currentFrame.quantityOfRemainingShoots);
+        }
+
         foreach (PinBehaviour pin in hitPins)
         {
             pin.gameObject.SetActive(false);
         }
+
         if (hitPins.Count == 10)
         {
+            CanvasBehaviour.instance.performStrike();
             startFrame();
+        }else if (currentFrame.quantityOfRemainingShoots == 0 && hitPins.Count+previousQuantity >=10)
+        {
+            CanvasBehaviour.instance.performAlmostStrike();
         }
-        
-
     }
 
     public void endAttempt()

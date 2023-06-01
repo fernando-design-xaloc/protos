@@ -8,7 +8,6 @@ public class Balldeleter : MonoBehaviour
     {
         if (other.gameObject.tag.Equals("Ball"))
         {
-            Debug.Log("Ball has entered the deleter");
             Destroy(other.gameObject);
             if(!BowlingGameManager.instance.isAPinHit) 
             { 
